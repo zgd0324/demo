@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	    <meta charset="utf-8">
+		<title>首页</title>
+	    <link href="/static/css/bootstrap/bootstrap-3.3.5.min.css" rel="stylesheet">
+	    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+	    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap-table.min.css">
+	    <script src="/static/js/jquery/jquery-2.1.1.min.js"></script>
+	    
+	    <style type="text/css">
+	    	#mytable tr:nth-child(even){
+				background: #fafafa;
+			}
+			#mytable th{
+				background: #efefef;
+			}
+	    </style>
+  	</head>
+  	<body>
+		<!-- <table id="mytable"></table> -->
+		<script type="text/javascript">
+			$(function () {
+			    var t = $("#mytable").bootstrapTable({
+			        url: '/static/tb.json',
+			        method: 'get',
+			        dataType: "json",
+			        striped: true,//设置为 true 会有隔行变色效果
+			        undefinedText: "空",//当数据为 undefined 时显示的字符
+			        pagination: true, //分页
+			        // paginationLoop:true,//设置为 true 启用分页条无限循环的功能。
+			        // showToggle: "true",//是否显示 切换试图（table/card）按钮
+			        showColumns: "true",//是否显示 内容列下拉框
+			        pageNumber: 1,//如果设置了分页，首页页码
+			        // showPaginationSwitch:true,//是否显示 数据条数选择框
+			        pageSize: 5,//如果设置了分页，页面数据条数
+			        pageList: [5, 10, 20, 30],	//如果设置了分页，设置可供选择的页面数据条数。设置为All 则显示所有记录。
+			        paginationPreText: '‹',//指定分页条中上一页按钮的图标或文字,这里是<
+			        paginationNextText: '›',//指定分页条中下一页按钮的图标或文字,这里是>
+			        // singleSelect: false,//设置True 将禁止多选
+			        search: false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+			        data_local: "zh-US",//表格汉化
+			        sidePagination: "client", //服务端处理分页 server
+			        queryParams: function (params) {//自定义参数，这里的参数是传给后台的，我这是是分页用的
+			            return {//这里的params是table提供的
+			                cp: params.offset,//从数据库第几条记录开始
+			                ps: params.limit//找多少条
+			            };
+			        },
+			        idField: "userId",//每一行的唯一标识，一般为主键列
+			        columns: [
+			            {
+			                title: 'id',//表的列名
+			                field: 'userId',//json数据中rows数组中的属性名
+			                align: 'center'//水平居中
+			            },
+			            {
+			                title: '账号',
+			                field: 'loginName',
+			                align: 'center'
+			            },
+			            {
+			                title: '真实姓名',
+			                field: 'realName',
+			                align: 'center'
+			            },
+			            {
+			                //EMAIL
+			                title: '邮箱',
+			                field: 'email',
+			                align: 'center'
+			            },
+			            {
+			                //部门名字
+			                title: '部门',
+			                field: 'dept.dname',//可以直接取到属性里面的属性，赞
+			                align: 'center'
+			            },
+			            {
+			                title: '状态',
+			                field: 'userStatus',
+			                align: 'center',
+			                formatter: function (value, row, index) {//自定义显示，这三个参数分别是：value该行的属性，row该行记录，index该行下标
+			                    return row.userStatus == 0 ? "正常" : row.userStatus == 1 ? "请假" : "离职";
+			                }
+			 
+			            },
+			            {
+			                title: '操作',
+			                field: 'userId',
+			                align: 'center',
+			                formatter: function (value, row, index) {//自定义显示可以写标签哦~
+			                    return '<a href="#" mce_href="#" onclick="edit(\'' + row.userId + '\')">操作</a> ';
+			                }
+			            }
+			 
+			        ]
+			    });
+			 
+			 
+			    t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数
+			        console.log("load success");
+			        $(".pull-right").css("display", "block");
+			    });
+			 
+			});
+		</script>	
+
+	    <script src="/static/js/bootstrap/bootstrap-3.3.5.min.js"></script>
+	    <script src="/static/js/bootstrap/bootstrap-table.min.js"></script>
+	    <script src="/static/js/bootstrap/bootstrap-table-zh-CN.js"></script>
+  	</body>
+</html>

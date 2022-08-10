@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap-3.3.5.min.css" />
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="/static/js/jquery/jquery-2.1.1.min.js"></script>
+    <script>if(window.top !== window.self){ window.top.location = window.location;}</script>
+    
+    <style type="text/css">
+    	.gray-bg{
+    		background-color: #f3f3f4;
+    	}
+    	.middle-box{
+    		max-width: 400px;
+		    z-index: 100;
+		    margin: 0 auto;
+		    padding-top: 40px;
+    	}
+    	.text-center{
+    		text-align: center;
+    	}
+    	.logo-name {
+		    color: #e6e6e6;
+		    font-size: 180px;
+		    font-weight: 800;
+		    letter-spacing: -10px;
+		}
+    	form input{
+    		width: 300px;
+    	}
+    	#to-recover{
+    		width: 290px;
+    		display: inline-block;
+    	}
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="middle-box text-center">
+        <div>
+            <div>
+                <h1 class="logo-name" style="font-size: 70px;">Welcome</h1>
+            </div>
+            <h3>欢迎注册</h3>
+            <p>创建一个新账户</p>
+            <form>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" id="username" placeholder="请输入用户名" />
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="请输入密码" />
+                </div>
+                <div>
+					<a onclick="severCheck();" class="flip-link btn btn-info" id="to-recover" style="width: 400px;">注 册</a>
+				</div><br>
+                <p>
+                	<small>已经有账户了？</small>
+                	<a href="/user/index">点此登录</a>
+                </p>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+		//服务器校验
+		function severCheck(){
+			if(check()){
+				var username = $("#username").val();
+				var password = $("#password").val();
+				$.ajax({
+					type: "POST",
+					url: '/user/register',
+			    	data: {
+			    		username: username,
+			    		password: password
+			    	},
+					cache: false,
+					success: function(msg){
+						if("success" == msg){
+							alert("注册成功，自动跳转登陆页面");
+							window.location.href = "/user/index";
+						}else if("usererror" == msg){
+							$("#username").tips({
+								side : 1,
+								msg : "用户名已被占用",
+								bg : '#FF5080',
+								time : 15
+							});
+							$("#username").focus();
+						}else{
+							$("#username").tips({
+								side : 1,
+								msg : "服务器错误",
+								bg : '#FF5080',
+								time : 15
+							});
+							$("#username").focus();
+						}
+					}
+				});
+			}
+		}
+	
+		$(document).keyup(function(event) {
+			if (event.keyCode == 13) {
+				$("#to-recover").trigger("click");
+			}
+		});
+	
+		//客户端校验
+		function check() {
+			if ($("#username").val() == "") {
+				$("#username").tips({
+					side : 2,
+					msg : '用户名不得为空',
+					bg : '#AE81FF',
+					time : 3
+				});
+	
+				$("#username").focus();
+				return false;
+			} else {
+				$("#username").val(jQuery.trim($('#username').val()));
+			}
+	
+			if ($("#password").val() == "") {
+				$("#password").tips({
+					side : 2,
+					msg : '密码不得为空',
+					bg : '#AE81FF',
+					time : 3
+				});
+	
+				$("#password").focus();
+				return false;
+			}
+	
+			return true;
+		}
+    </script>
+    
+    <script src="/static/js/bootstrap/bootstrap-3.3.5.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery/jquery.tips.js"></script>
+</body>
+</html>
